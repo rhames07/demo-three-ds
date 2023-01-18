@@ -25,6 +25,10 @@ app.get("/", (_, res) => {
   res.sendFile(path.join(__dirname, "static", "index.html"));
 });
 
+app.get("/congrats", (_, res) => {
+  res.sendFile(path.join(__dirname, "static", "congrats.html"));
+});
+
 app.post("/process_card", async (req, res) => {
   const {
     cardholder: { name },
@@ -126,6 +130,38 @@ app.post("/process_payment", async (req, res) => {
     if (data && status == 201) {
       const response = { ...{ data }, ...{ status } };
       res.status(201).json(response);
+    }
+    res.status(500).send();
+    // const response = { ...{ data: payment }, ...{ status: 201 } };
+    // res.status(201).json(response);
+  } catch (error) {
+    handleAxiosErrors(error);
+    res.status(500).send();
+  }
+});
+
+app.get("/get_payment/:payment_id", async (req, res) => {
+  const options = {
+    headers: {
+      "X-Caller-Scopes": "payments",
+      "X-Tiger-Token": FURY_BEARER_TOKEN,
+      "x-test-token": "true",
+    },
+    params: {
+      "caller.id": "1004607769",
+      "client.id": "5083322942877179",
+      "caller.admin": "true",
+    },
+  };
+
+  try {
+    const { data, status } = await axios.get(
+      "https://theta--openplatform-payments-api.furyapps.io/payments/" + req.params.payment_id,
+      options
+    );
+    if (data && status == 200) {
+      const response = { ...{ data }, ...{ status } };
+      res.status(200).json(response);
     }
     res.status(500).send();
     // const response = { ...{ data: payment }, ...{ status: 201 } };

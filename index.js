@@ -14,7 +14,7 @@ const PUBLIC_KEY = "TEST-ccac7255-c3d0-4d25-bc8e-145e8cc8012d";
 
 const CARD_TOKEN_URL = "https://api.mercadopago.com/v1/card_tokens/zeta";
 const PAYMENTS_BASE_URL =
-  "https://payments-beta-staging.melioffice.com/v1/payments";
+  "https://api.mercadopago.com/v1/payments";
 
 const app = express();
 app.use(express.urlencoded({ extended: false }));
@@ -123,7 +123,7 @@ app.post("/process_payment", async (req, res) => {
 
   try {
     const { data, status } = await axios.post(
-      "https://theta--openplatform-payments-api.furyapps.io/payments",
+      PAYMENTS_BASE_URL,
       body,
       options
     );
@@ -156,7 +156,7 @@ app.get("/get_payment/:payment_id", async (req, res) => {
 
   try {
     const { data, status } = await axios.get(
-      "https://theta--openplatform-payments-api.furyapps.io/payments/" + req.params.payment_id,
+      "https://api.mercadopago.com/v1/payments/" + req.params.payment_id,
       options
     );
     if (data && status == 200) {

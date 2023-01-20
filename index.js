@@ -13,8 +13,10 @@ const FURY_BEARER_TOKEN = "Bearer " + FURY_TOKEN;
 const PUBLIC_KEY = "TEST-ccac7255-c3d0-4d25-bc8e-145e8cc8012d";
 
 const CARD_TOKEN_URL = "https://api.mercadopago.com/v1/card_tokens/zeta";
-const PAYMENTS_BASE_URL =
+const PAYMENTS_STAGING_URL =
   "https://payments-beta-staging.melioffice.com/v1/payments";
+const PAYMENTS_THETA_URL =
+  "https://theta--openplatform-payments-api.furyapps.io/payments/";
 
 const app = express();
 app.use(express.urlencoded({ extended: false }));
@@ -123,7 +125,7 @@ app.post("/process_payment", async (req, res) => {
 
   try {
     const { data, status } = await axios.post(
-      "https://theta--openplatform-payments-api.furyapps.io/payments",
+      PAYMENTS_THETA_URL,
       body,
       options
     );
@@ -132,8 +134,6 @@ app.post("/process_payment", async (req, res) => {
       res.status(201).json(response);
     }
     res.status(500).send();
-    // const response = { ...{ data: payment }, ...{ status: 201 } };
-    // res.status(201).json(response);
   } catch (error) {
     handleAxiosErrors(error);
     res.status(500).send();
@@ -156,7 +156,7 @@ app.get("/get_payment/:payment_id", async (req, res) => {
 
   try {
     const { data, status } = await axios.get(
-      "https://theta--openplatform-payments-api.furyapps.io/payments/" + req.params.payment_id,
+      PAYMENTS_THETA_URL + req.params.payment_id,
       options
     );
     if (data && status == 200) {
@@ -164,8 +164,6 @@ app.get("/get_payment/:payment_id", async (req, res) => {
       res.status(200).json(response);
     }
     res.status(500).send();
-    // const response = { ...{ data: payment }, ...{ status: 201 } };
-    // res.status(201).json(response);
   } catch (error) {
     handleAxiosErrors(error);
     res.status(500).send();
@@ -174,16 +172,6 @@ app.get("/get_payment/:payment_id", async (req, res) => {
 
 function handleAxiosErrors(error) {
   console.log(error);
-  //   if (error.response) {
-  //     console.log(error.response.data);
-  //     console.log(error.response.status);
-  //     console.log(error.response.headers);
-  //   } else if (error.request) {
-  //     console.log(error.request);
-  //   } else {
-  //     console.log("Error", error.message);
-  //   }
-  //   console.log(error.config);
 }
 app.listen(8080, () => {
   console.log("The server is now running on port 8080");

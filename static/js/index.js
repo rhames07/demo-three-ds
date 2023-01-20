@@ -108,20 +108,16 @@ function doChallenge(payment) {
 async function processPayment() {
   const { id: token } = await createCardToken();
   const payment = await createPayment(token);
-  document.getElementById("payment-id-hdn").value = payment.id;
+  localStorage.setItem('paymentId', payment.id);
   doChallenge(payment);
 }
 
 document.getElementById("checkout-btn").addEventListener("click", () => {
-  setTimeout(() => {
     processPayment();
-  }, 500);
 });
 
-window.addEventListener('message', (e) => {
-  if (e.origin === window.location.origin) {
-      if (e.data.status === 'COMPLETE') {
+window.addEventListener("message", (e) => {
+      if (e.data.status === "COMPLETE") {
           window.open("congrats.html");
       }
-  }
 });

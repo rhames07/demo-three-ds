@@ -107,9 +107,9 @@ function doChallenge(payment) {
 
 async function processPayment() {
   const { id: token } = await createCardToken();
-  // const payment = await createPayment(token);
-  localStorage.setItem('paymentId', 53804872191);
-  // doChallenge(payment);
+  const payment = await createPayment(token);
+  localStorage.setItem('paymentId', payment.id);
+  doChallenge(payment);
 }
 
 document.getElementById("checkout-btn").addEventListener("click", () => {

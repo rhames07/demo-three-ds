@@ -141,22 +141,27 @@ app.post("/process_payment", async (req, res) => {
 });
 
 app.get("/get_payment/:payment_id", async (req, res) => {
+  // const options = {
+  //   headers: {
+  //     "X-Caller-Scopes": "payments",
+  //     "X-Tiger-Token": FURY_BEARER_TOKEN,
+  //     "x-test-token": "true",
+  //   },
+  //   params: {
+  //     "caller.id": "1004607769",
+  //     "client.id": "5083322942877179",
+  //     "caller.admin": "true",
+  //   },
+  // };
   const options = {
     headers: {
-      "X-Caller-Scopes": "payments",
-      "X-Tiger-Token": FURY_BEARER_TOKEN,
-      "x-test-token": "true",
-    },
-    params: {
-      "caller.id": "1004607769",
-      "client.id": "5083322942877179",
-      "caller.admin": "true",
-    },
-  };
+        "X-Caller-Scopes": "admin,cbt",
+    }
+  }
 
   try {
     const { data, status } = await axios.get(
-      "https://api.mercadopago.com/v1/payments/" + req.params.payment_id,
+      "https://internal-api.mercadopago.com/v1/payments/" + req.params.payment_id,
       options
     );
     if (data && status == 200) {

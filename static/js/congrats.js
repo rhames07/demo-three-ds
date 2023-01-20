@@ -23,9 +23,9 @@ async function init() {
     console.log(result);
     document
       .getElementById("congrats-div")
-      .innerHTML(
+      .innerHTML =
         "Pagamento " + result.data.id + " -> Status: " + result.data.status
-      );
+      ;
   } catch (error) {
     alert("Unexpected error\n" + JSON.stringify(error));
   }

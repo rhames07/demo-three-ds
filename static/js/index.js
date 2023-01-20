@@ -107,16 +107,14 @@ function doChallenge(payment) {
 
 async function processPayment() {
   const { id: token } = await createCardToken();
-  const payment = await createPayment(token);
+  // const payment = await createPayment(token);
   localStorage.setItem('paymentId', 53804872191);
-  doChallenge(payment);
+  // doChallenge(payment);
 }
 
-// document.getElementById("checkout-btn").addEventListener("click", () => {
-//   setTimeout(() => {
-//     processPayment();
-//   }, 500);
-// });
+document.getElementById("checkout-btn").addEventListener("click", () => {
+    processPayment();
+});
 
 window.addEventListener("message", (e) => {
       if (e.data.status === "COMPLETE") {

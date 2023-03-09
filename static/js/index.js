@@ -1,12 +1,12 @@
-async function createCardToken() {
-  var mp = new MercadoPago("TEST-ccac7255-c3d0-4d25-bc8e-145e8cc8012d")
+const mp = new MercadoPago("TEST-81d04b99-7df6-4c7a-86b2-5d6e4097b723")
 
-  var cardNumber = "2303779999000408";
+async function createCardToken() {
+  var cardNumber = "5031433215406351";
   var securityCode = "123";
   var identificationType = "CPF";
   var identificationNumber = "123";
-  var cardExpirationMonth = 11;
-  var cardExpirationYear = 2025;
+  var cardExpirationMonth = "11";
+  var cardExpirationYear = "2025";
   var cardholderName = "APRO";
 
   const token = await mp.createCardToken({
@@ -18,11 +18,12 @@ async function createCardToken() {
     identificationType,
     identificationNumber,
   });
+  console.log(token)
   return token.id;
 }
 
 async function createPayment(token) {
-  var email = "test_user_1671715145@testuser.com";
+  var email = "test_user_14026913@testuser.com";
   var payment_method_id = "master";
   var marketplace = "NONE";
   var installments = 1;

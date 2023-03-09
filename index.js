@@ -3,7 +3,7 @@ import * as dotenv from "dotenv";
 import express from "express";
 dotenv.config();
 
-var YOUR_ACCESS_TOKEN = ""
+var YOUR_ACCESS_TOKEN = "TEST-367604750109681-030714-a1adc70b233852f82df8a3e76f83c28b-1160535239"
 var PAYMENTS_URL = "https://api.mercadopago.com/v1/payments"
 
 const app = express();

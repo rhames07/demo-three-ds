@@ -1,35 +1,24 @@
 async function createCardToken() {
-  var card_number = "2303779999000408";
-  var security_code = "123";
-  var expirationMonth = 11;
-  var expirationYear = 2025;
+  var mp = new MercadoPago("TEST-ccac7255-c3d0-4d25-bc8e-145e8cc8012d")
+
+  var cardNumber = "2303779999000408";
+  var securityCode = "123";
+  var identificationType = "CPF";
+  var identificationNumber = "123";
+  var cardExpirationMonth = 11;
+  var cardExpirationYear = 2025;
   var cardholderName = "APRO";
 
-  const data = {
-    cardholder: {
-      name: cardholderName,
-    },
-    card_number,
-    security_code,
-    expiration_year: Number(expirationYear),
-    expiration_month: Number(expirationMonth),
-  };
-
-  try {
-    const response = await fetch("/process_card", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    });
-    const result = await response.json();
-    if (result.status != 201) throw new Error("error creating card token");
-    console.log(result);
-    return result.data;
-  } catch (error) {
-    alert("Unexpected error\n" + JSON.stringify(error));
-  }
+  const token = await mp.createCardToken({
+    cardNumber,
+    securityCode,
+    cardholderName,
+    cardExpirationMonth,
+    cardExpirationYear,
+    identificationType,
+    identificationNumber,
+  });
+  return token.id;
 }
 
 async function createPayment(token) {
@@ -37,7 +26,7 @@ async function createPayment(token) {
   var payment_method_id = "master";
   var marketplace = "NONE";
   var installments = 1;
-  var transaction_amount = 34;
+  var transaction_amount = 10;
   var description = "Payment test";
 
   const data = {
@@ -74,30 +63,9 @@ function doChallenge(payment) {
       status_detail,
       three_dsinfo: { creq, external_resource_url },
     } = payment;
+    console.log(status, status_detail)
     if (status === "pending" && status_detail === "pending_challenge") {
-      var iframe = document.createElement("iframe");
-      iframe.name = "myframe";
-      iframe.id = "myframe";
-      iframe.height = "500px";
-      iframe.width = "600px";
-      document.body.appendChild(iframe);
-
-      var idocument = iframe.contentWindow.document;
-
-      var myform = idocument.createElement("form");
-      myform.name = "myform";
-      myform.setAttribute("target", "myframe");
-      myform.setAttribute("method", "post");
-      myform.setAttribute("action", external_resource_url);
-
-      var hiddenField = idocument.createElement("input");
-      hiddenField.setAttribute("type", "hidden");
-      hiddenField.setAttribute("name", "creq");
-      hiddenField.setAttribute("value", creq);
-      myform.appendChild(hiddenField);
-      iframe.appendChild(myform);
-
-      myform.submit();
+      mountIframe(creq, external_resource_url)
     }
   } catch (error) {
     console.log(error);
@@ -105,23 +73,45 @@ function doChallenge(payment) {
   }
 }
 
+function mountIframe(creq, external_resource_url) {
+  var iframe = document.createElement("iframe");
+  iframe.name = "myframe";
+  iframe.id = "myframe";
+  iframe.height = "500px";
+  iframe.width = "600px";
+  document.body.appendChild(iframe);
+
+  var idocument = iframe.contentWindow.document;
+
+  var myform = idocument.createElement("form");
+  myform.name = "myform";
+  myform.setAttribute("target", "myframe");
+  myform.setAttribute("method", "post");
+  myform.setAttribute("action", external_resource_url);
+
+  var hiddenField = idocument.createElement("input");
+  hiddenField.setAttribute("type", "hidden");
+  hiddenField.setAttribute("name", "creq");
+  hiddenField.setAttribute("value", creq);
+  myform.appendChild(hiddenField);
+  iframe.appendChild(myform);
+
+  myform.submit();
+}
+
 async function processPayment() {
-  const { id: token } = await createCardToken();
+  const token = await createCardToken();
   const payment = await createPayment(token);
-  document.getElementById("payment-id-hdn").value = payment.id;
+  localStorage.setItem('paymentId', payment.id);
   doChallenge(payment);
 }
 
 document.getElementById("checkout-btn").addEventListener("click", () => {
-  setTimeout(() => {
     processPayment();
-  }, 500);
 });
 
-window.addEventListener('message', (e) => {
-  if (e.origin === window.location.origin) {
-      if (e.data.status === 'COMPLETE') {
+window.addEventListener("message", (e) => {
+      if (e.data.status === "COMPLETE") {
           window.open("congrats.html");
       }
-  }
 });

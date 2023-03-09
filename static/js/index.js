@@ -1,4 +1,4 @@
-const mp = new MercadoPago("TEST-81d04b99-7df6-4c7a-86b2-5d6e4097b723")
+const mp = new MercadoPago("APP_USR-2dfd505a-4b30-4403-878b-f8fb618e58b3")
 
 async function createCardToken() {
   var cardNumber = "5031433215406351";

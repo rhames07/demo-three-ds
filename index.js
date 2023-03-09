@@ -1,9 +1,11 @@
 import axios from "axios";
 import * as dotenv from "dotenv";
 import express from "express";
+import https from "https";
+import selfSigned from "openssl-self-signed-certificate";
 dotenv.config();
 
-var YOUR_ACCESS_TOKEN = "TEST-367604750109681-030714-a1adc70b233852f82df8a3e76f83c28b-1160535239"
+var YOUR_ACCESS_TOKEN = "APP_USR-367604750109681-030714-bb08bac7a329e8d92230e5bdb6ab600a-1160535239"
 var PAYMENTS_URL = "https://api.mercadopago.com/v1/payments"
 
 const app = express();
@@ -116,6 +118,10 @@ function handleAxiosErrors(error) {
     }
     console.log(error.config);
 }
-app.listen(8080, () => {
-  console.log("The server is now running on port 8080");
-});
+
+var options = {
+    key: selfSigned.key,
+    cert: selfSigned.cert
+};
+
+https.createServer(options, app).listen(8080);

@@ -1,11 +1,9 @@
 import axios from "axios";
-import * as dotenv from "dotenv";
 import express from "express";
 import https from "https";
 import selfSigned from "openssl-self-signed-certificate";
-dotenv.config();
 
-var YOUR_ACCESS_TOKEN = "APP_USR-367604750109681-030714-bb08bac7a329e8d92230e5bdb6ab600a-1160535239"
+var ACCESS_TOKEN = ""
 var PAYMENTS_URL = "https://api.mercadopago.com/v1/payments"
 
 const app = express();
@@ -59,7 +57,7 @@ app.post("/process_payment", async (req, res) => {
 
   const options = {
     headers: {
-      "Authorization": "Bearer " + YOUR_ACCESS_TOKEN,
+      "Authorization": "Bearer " + ACCESS_TOKEN,
       "Content-Type": "application/json"
     },
   };
@@ -84,7 +82,7 @@ app.post("/process_payment", async (req, res) => {
 app.get("/get_payment/:payment_id", async (req, res) => {
   const options = {
     headers: {
-      "Authorization": "Bearer " + YOUR_ACCESS_TOKEN,
+      "Authorization": "Bearer " + ACCESS_TOKEN,
     },
   };
 
@@ -106,7 +104,6 @@ app.get("/get_payment/:payment_id", async (req, res) => {
 });
 
 function handleAxiosErrors(error) {
-  // console.log(error);
     if (error.response) {
       console.log(error.response.data);
       console.log(error.response.status);

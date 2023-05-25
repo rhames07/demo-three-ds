@@ -1,4 +1,4 @@
-const mp = new MercadoPago("APP_USR-2dfd505a-4b30-4403-878b-f8fb618e58b3")
+const mp = new MercadoPago("ENV_ACCESS_TOKEN")
 
 async function createCardToken() {
   var cardNumber = "5031433215406351";
@@ -23,7 +23,7 @@ async function createCardToken() {
 }
 
 async function createPayment(token) {
-  var email = "test_user_14026913@testuser.com";
+  var email = "test@test.com";
   var payment_method_id = "master";
   var marketplace = "NONE";
   var installments = 1;
@@ -62,7 +62,7 @@ function doChallenge(payment) {
     const {
       status,
       status_detail,
-      three_dsinfo: { creq, external_resource_url },
+      three_ds_info: { creq, external_resource_url },
     } = payment;
     console.log(status, status_detail)
     if (status === "pending" && status_detail === "pending_challenge") {
